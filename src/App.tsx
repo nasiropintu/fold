@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Binary, Combine, EyeOff, FileCheck, FileDiff, FileImage, Files, Heart, ImagePlus, Info, LockKeyhole, Menu, PenTool, ScanText, Scissors, Sparkles, Stamp, WandSparkles, X } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Binary, Combine, EyeOff, FileCheck, FileDiff, FileImage, FileSpreadsheet, Files, FileText, Heart, ImagePlus, Info, LockKeyhole, Menu, PenTool, ScanText, Scissors, Sparkles, Stamp, WandSparkles, Workflow, X } from 'lucide-react';
 import Home from './features/Home';
 import AboutModal from './components/AboutModal';
 
@@ -16,8 +16,12 @@ const CompareTool = lazy(() => import('./features/CompareTool'));
 const OcrTool = lazy(() => import('./features/OcrTool'));
 const RedactTool = lazy(() => import('./features/RedactTool'));
 const FormsTool = lazy(() => import('./features/FormsTool'));
+const PdfToMarkdownTool = lazy(() => import('./features/PdfToMarkdownTool'));
+const ExcelTool = lazy(() => import('./features/ExcelTool'));
+const AiSummarizerTool = lazy(() => import('./features/AiSummarizerTool'));
+const WorkflowTool = lazy(() => import('./features/WorkflowTool'));
 
-type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers' | 'compare' | 'ocr' | 'redact' | 'forms';
+type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers' | 'compare' | 'ocr' | 'redact' | 'forms' | 'markdown' | 'excel' | 'summarizer' | 'workflow';
 type ToolInfo = { key: ToolKey; label: string; short: string; description: string; icon: typeof Combine; eyebrow: string };
 
 const tools: ToolInfo[] = [
@@ -34,6 +38,10 @@ const tools: ToolInfo[] = [
   { key: 'ocr', label: 'OCR PDF', short: 'Searchable scans & text', description: 'Recognize and extract text from scanned PDFs using in-browser machine vision.', icon: ScanText, eyebrow: 'EXTRACT SCAN TEXT' },
   { key: 'redact', label: 'Redact PDF', short: 'Sanitize confidential data', description: 'Permanently black out and eliminate sensitive information from document pages.', icon: EyeOff, eyebrow: 'PRIVACY & SECURITY' },
   { key: 'forms', label: 'Fill Forms', short: 'Fill & flatten AcroForms', description: 'Inspect, fill in interactive PDF form fields, and optionally flatten values.', icon: FileCheck, eyebrow: 'INTERACTIVE FORMS' },
+  { key: 'markdown', label: 'PDF to Markdown', short: 'Clean structured text', description: 'Extract clean Markdown with automatic heading levels and paragraph spacing.', icon: FileText, eyebrow: 'MARKDOWN EXTRACTION' },
+  { key: 'excel', label: 'PDF & Excel', short: 'Spreadsheet converter', description: 'Convert tables from PDF into Excel (.xlsx), or format spreadsheets as PDF.', icon: FileSpreadsheet, eyebrow: 'TABLES & SPREADSHEETS' },
+  { key: 'summarizer', label: 'AI Summarizer', short: 'On-device synthesis', description: 'Summarize key takeaways 100% on-device with Chrome AI or smart heuristics.', icon: Sparkles, eyebrow: 'LOCAL INTELLIGENCE' },
+  { key: 'workflow', label: 'Workflow Automator', short: 'Multi-step pipeline', description: 'Chain watermark, page numbers, rotation, and compression into one run.', icon: Workflow, eyebrow: 'CHAINED AUTOMATION' },
 ];
 
 export default function App() {
@@ -57,6 +65,10 @@ export default function App() {
       case 'ocr': return <OcrTool />;
       case 'redact': return <RedactTool />;
       case 'forms': return <FormsTool />;
+      case 'markdown': return <PdfToMarkdownTool />;
+      case 'excel': return <ExcelTool />;
+      case 'summarizer': return <AiSummarizerTool />;
+      case 'workflow': return <WorkflowTool />;
       default: return <Home onSelect={go} />;
     }
   };

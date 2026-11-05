@@ -65,6 +65,10 @@ fold/
 11. **OCR PDF (`OcrTool.tsx`)**: In-browser machine vision and OCR using `tesseract.js` WebAssembly to extract text, export to `.txt`, or generate clean text PDFs.
 12. **Redact PDF (`RedactTool.tsx`)**: Interactive rectangle drawing to permanently black out and purge confidential data by re-rasterizing redacted pages.
 13. **Fill Forms (`FormsTool.tsx`)**: Inspect, fill in interactive AcroForm fields (text, checkboxes, dropdowns, radios), and optionally flatten them.
+14. **PDF to Markdown (`PdfToMarkdownTool.tsx`)**: Extract clean Markdown text with automatic heading detection, paragraph groupings, and clipboard/.md export.
+15. **PDF & Excel (`ExcelTool.tsx`)**: Dual-mode converter — extract PDF table structures into Excel (.xlsx) workbooks or convert spreadsheets into styled PDF tables.
+16. **AI Summarizer (`AiSummarizerTool.tsx`)**: Local document summarization supporting Chrome Built-in AI with on-device algorithmic fallback.
+17. **Workflow Automator (`WorkflowTool.tsx`)**: Sequential pipeline builder chaining watermarks, pagination, page rotations, and rasterized compression into a single run.
 
 ### Memory & Stability Safeguards (`src/lib/pdf.ts`)
 * $\le 100\text{ MB}$ per input PDF; $\le 200\text{ pages}$ per document.
