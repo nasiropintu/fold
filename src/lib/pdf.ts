@@ -1,4 +1,4 @@
-import { degrees, PDFDocument, PageSizes, rgb, StandardFonts } from 'pdf-lib';
+import { degrees, PDFCheckBox, PDFDocument, PDFDropdown, PDFRadioGroup, PDFTextField, PageSizes, rgb, StandardFonts } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import JSZip from 'jszip';
 
@@ -639,6 +639,173 @@ export async function applySignature(
     width: drawWidth,
     height: drawHeight,
   });
+
+  return doc.save();
+}
+
+export type RedactionBox = {
+  id: string;
+  pageNumber: number;
+  xRatio: number;
+  yRatio: number;
+  widthRatio: number;
+  heightRatio: number;
+};
+
+export async function redactPdfPages(
+  file: File,
+  redactions: RedactionBox[]
+): Promise<Uint8Array> {
+  const bytes = await readPdfBytes(file);
+  const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+  const pdfLibDoc = await PDFDocument.load(bytes);
+  const outputDoc = await PDFDocument.create();
+
+  const totalPages = pdfjsDoc.numPages;
+
+  const redactionsByPage = new Map<number, RedactionBox[]>();
+  for (const box of redactions) {
+    const list = redactionsByPage.get(box.pageNumber) || [];
+    list.push(box);
+    redactionsByPage.set(box.pageNumber, list);
+  }
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum += 1) {
+    const pageRedactions = redactionsByPage.get(pageNum);
+
+    if (pageRedactions && pageRedactions.length > 0) {
+      const page = await pdfjsDoc.getPage(pageNum);
+      const baseViewport = page.getViewport({ scale: 1.0 });
+      const scale = 2.0;
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Could not initialize canvas context for redaction.');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      ctx.fillStyle = '#000000';
+      for (const box of pageRedactions) {
+        const rx = box.xRatio * canvas.width;
+        const ry = box.yRatio * canvas.height;
+        const rw = box.widthRatio * canvas.width;
+        const rh = box.heightRatio * canvas.height;
+        ctx.fillRect(rx, ry, rw, rh);
+      }
+
+      const imgBytes = canvasJpegBytes(canvas, 0.92);
+      canvas.width = 0;
+      canvas.height = 0;
+      page.cleanup();
+
+      const embeddedJpg = await outputDoc.embedJpg(imgBytes);
+      const newPage = outputDoc.addPage([baseViewport.width, baseViewport.height]);
+      newPage.drawImage(embeddedJpg, {
+        x: 0,
+        y: 0,
+        width: baseViewport.width,
+        height: baseViewport.height,
+      });
+    } else {
+      const [copiedPage] = await outputDoc.copyPages(pdfLibDoc, [pageNum - 1]);
+      outputDoc.addPage(copiedPage);
+    }
+  }
+
+  await pdfjsDoc.destroy();
+  return outputDoc.save();
+}
+
+export type FormFieldType = 'text' | 'checkbox' | 'dropdown' | 'radio' | 'unknown';
+
+export type FormFieldInfo = {
+  name: string;
+  type: FormFieldType;
+  currentValue: string | boolean;
+  options?: string[];
+};
+
+export async function inspectFormFields(file: File): Promise<FormFieldInfo[]> {
+  const doc = await loadPdfLibDocument(file);
+  const form = doc.getForm();
+  const fields = form.getFields();
+
+  return fields.map((field) => {
+    const name = field.getName();
+    if (field instanceof PDFTextField) {
+      return {
+        name,
+        type: 'text' as const,
+        currentValue: field.getText() || '',
+      };
+    }
+    if (field instanceof PDFCheckBox) {
+      return {
+        name,
+        type: 'checkbox' as const,
+        currentValue: field.isChecked(),
+      };
+    }
+    if (field instanceof PDFDropdown) {
+      return {
+        name,
+        type: 'dropdown' as const,
+        currentValue: field.getSelected()[0] || '',
+        options: field.getOptions(),
+      };
+    }
+    if (field instanceof PDFRadioGroup) {
+      return {
+        name,
+        type: 'radio' as const,
+        currentValue: field.getSelected() || '',
+        options: field.getOptions(),
+      };
+    }
+    return {
+      name,
+      type: 'unknown' as const,
+      currentValue: '',
+    };
+  });
+}
+
+export async function fillPdfForm(
+  file: File,
+  values: Record<string, string | boolean>,
+  flatten = false
+): Promise<Uint8Array> {
+  const doc = await loadPdfLibDocument(file);
+  const form = doc.getForm();
+
+  for (const [name, val] of Object.entries(values)) {
+    try {
+      const field = form.getFieldMaybe(name);
+      if (!field) continue;
+
+      if (field instanceof PDFTextField && typeof val === 'string') {
+        field.setText(val);
+      } else if (field instanceof PDFCheckBox && typeof val === 'boolean') {
+        if (val) field.check();
+        else field.uncheck();
+      } else if (field instanceof PDFDropdown && typeof val === 'string') {
+        if (val) field.select(val);
+      } else if (field instanceof PDFRadioGroup && typeof val === 'string') {
+        if (val) field.select(val);
+      }
+    } catch (e) {
+      console.warn(`Could not set value for field "${name}":`, e);
+    }
+  }
+
+  if (flatten) {
+    form.flatten();
+  }
 
   return doc.save();
 }

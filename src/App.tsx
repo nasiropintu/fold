@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Binary, Combine, FileImage, Files, Heart, ImagePlus, Info, LockKeyhole, Menu, PenTool, Scissors, Sparkles, Stamp, WandSparkles, X } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Binary, Combine, EyeOff, FileCheck, FileDiff, FileImage, Files, Heart, ImagePlus, Info, LockKeyhole, Menu, PenTool, ScanText, Scissors, Sparkles, Stamp, WandSparkles, X } from 'lucide-react';
 import Home from './features/Home';
 import AboutModal from './components/AboutModal';
 
@@ -12,8 +12,12 @@ const ExportImagesTool = lazy(() => import('./features/ExportImagesTool'));
 const SignTool = lazy(() => import('./features/SignTool'));
 const WatermarkTool = lazy(() => import('./features/WatermarkTool'));
 const PageNumbersTool = lazy(() => import('./features/PageNumbersTool'));
+const CompareTool = lazy(() => import('./features/CompareTool'));
+const OcrTool = lazy(() => import('./features/OcrTool'));
+const RedactTool = lazy(() => import('./features/RedactTool'));
+const FormsTool = lazy(() => import('./features/FormsTool'));
 
-type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers';
+type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers' | 'compare' | 'ocr' | 'redact' | 'forms';
 type ToolInfo = { key: ToolKey; label: string; short: string; description: string; icon: typeof Combine; eyebrow: string };
 
 const tools: ToolInfo[] = [
@@ -26,6 +30,10 @@ const tools: ToolInfo[] = [
   { key: 'sign', label: 'Sign PDF', short: 'Stamp digital signature', description: 'Draw, type, or upload your signature and stamp it onto any page.', icon: PenTool, eyebrow: 'E-SIGN DOCUMENTS' },
   { key: 'watermark', label: 'Watermark PDF', short: 'Stamp text or logos', description: 'Add customizable text or brand watermark stamps across pages.', icon: Stamp, eyebrow: 'PROTECT & BRAND' },
   { key: 'page-numbers', label: 'Page numbers', short: 'Header or footer numbers', description: 'Insert customizable page numbering in headers or footers.', icon: Binary, eyebrow: 'PAGINATE DOCUMENT' },
+  { key: 'compare', label: 'Compare PDFs', short: 'Visual document diff', description: 'Compare two PDF revisions side-by-side with pixel diff highlighting.', icon: FileDiff, eyebrow: 'SPOT DIFFERENCES' },
+  { key: 'ocr', label: 'OCR PDF', short: 'Searchable scans & text', description: 'Recognize and extract text from scanned PDFs using in-browser machine vision.', icon: ScanText, eyebrow: 'EXTRACT SCAN TEXT' },
+  { key: 'redact', label: 'Redact PDF', short: 'Sanitize confidential data', description: 'Permanently black out and eliminate sensitive information from document pages.', icon: EyeOff, eyebrow: 'PRIVACY & SECURITY' },
+  { key: 'forms', label: 'Fill Forms', short: 'Fill & flatten AcroForms', description: 'Inspect, fill in interactive PDF form fields, and optionally flatten values.', icon: FileCheck, eyebrow: 'INTERACTIVE FORMS' },
 ];
 
 export default function App() {
@@ -45,6 +53,10 @@ export default function App() {
       case 'sign': return <SignTool />;
       case 'watermark': return <WatermarkTool />;
       case 'page-numbers': return <PageNumbersTool />;
+      case 'compare': return <CompareTool />;
+      case 'ocr': return <OcrTool />;
+      case 'redact': return <RedactTool />;
+      case 'forms': return <FormsTool />;
       default: return <Home onSelect={go} />;
     }
   };

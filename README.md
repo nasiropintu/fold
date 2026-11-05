@@ -38,6 +38,8 @@ Fold is architected and directed by **NasirPintu**, developed in active synergy 
 Fold is proudly built upon exceptional open-source libraries:
 * **[PDF.js](https://mozilla.github.io/pdf.js/)** *(Mozilla)* — In-browser PDF reading, rendering, and rasterization.
 * **[pdf-lib](https://pdf-lib.js.org/)** *(Hopding)* — Client-side PDF page assembly, splitting, rotation, and mutation.
+* **[Tesseract.js](https://tesseract.projectnaptha.com/)** *(Naptha)* — Client-side WebAssembly optical character recognition (OCR).
+* **[Pixelmatch](https://github.com/mapbox/pixelmatch)** *(Mapbox)* — High-speed, pixel-level visual difference engine.
 * **[React 19](https://react.dev/)** *(Meta)* — Declarative UI framework.
 * **[Vite](https://vitejs.dev/)** *(Yuxi Evan You & Vite Team)* — Modern frontend build tooling.
 * **[JSZip](https://stuk.github.io/jszip/)** *(Stuk)* — In-memory ZIP archive generation for file exports.

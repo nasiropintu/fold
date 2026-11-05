@@ -61,6 +61,10 @@ fold/
 7. **Sign PDF (`SignTool.tsx`)**: Draw, type, or upload a digital signature and visually position/stamp it on any PDF page.
 8. **Watermark PDF (`WatermarkTool.tsx`)**: Stamp customizable text or brand logos with rotation, opacity, position, and page range controls.
 9. **Page Numbers (`PageNumbersTool.tsx`)**: Add formatted header or footer page numbering with customizable placement, margins, and cover page skipping.
+10. **Compare PDFs (`CompareTool.tsx`)**: Pixel-level visual diff using `pixelmatch` to detect and highlight alterations between two PDF revisions.
+11. **OCR PDF (`OcrTool.tsx`)**: In-browser machine vision and OCR using `tesseract.js` WebAssembly to extract text, export to `.txt`, or generate clean text PDFs.
+12. **Redact PDF (`RedactTool.tsx`)**: Interactive rectangle drawing to permanently black out and purge confidential data by re-rasterizing redacted pages.
+13. **Fill Forms (`FormsTool.tsx`)**: Inspect, fill in interactive AcroForm fields (text, checkboxes, dropdowns, radios), and optionally flatten them.
 
 ### Memory & Stability Safeguards (`src/lib/pdf.ts`)
 * $\le 100\text{ MB}$ per input PDF; $\le 200\text{ pages}$ per document.

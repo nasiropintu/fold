@@ -1,6 +1,6 @@
-import { ArrowUpRight, Binary, FileImage, Combine, Files, ImagePlus, PenTool, Scissors, Stamp, WandSparkles, ScanText, FileSpreadsheet } from 'lucide-react';
+import { ArrowUpRight, Binary, FileImage, Combine, EyeOff, FileCheck, FileDiff, Files, ImagePlus, PenTool, Scissors, Stamp, WandSparkles, ScanText, FileSpreadsheet, Sparkles } from 'lucide-react';
 
-type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers';
+type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers' | 'compare' | 'ocr' | 'redact' | 'forms';
 type Props = { onSelect: (key: ToolKey) => void };
 const cards = [
   { key: 'merge' as const, title: 'Merge PDFs', detail: 'Make one file from many.', icon: Combine, number: '01', color: 'blue' },
@@ -12,6 +12,10 @@ const cards = [
   { key: 'sign' as const, title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green' },
   { key: 'watermark' as const, title: 'Watermark PDF', detail: 'Stamp text or custom logos.', icon: Stamp, number: '08', color: 'blue' },
   { key: 'page-numbers' as const, title: 'Page numbers', detail: 'Add header or footer pagination.', icon: Binary, number: '09', color: 'orange' },
+  { key: 'compare' as const, title: 'Compare PDFs', detail: 'Pixel-level visual document diff.', icon: FileDiff, number: '10', color: 'violet' },
+  { key: 'ocr' as const, title: 'OCR PDF', detail: 'Extract text via in-browser vision.', icon: ScanText, number: '11', color: 'green' },
+  { key: 'redact' as const, title: 'Redact PDF', detail: 'Permanently purge confidential data.', icon: EyeOff, number: '12', color: 'pink' },
+  { key: 'forms' as const, title: 'Fill Forms', detail: 'Fill, edit & flatten AcroForms.', icon: FileCheck, number: '13', color: 'blue' },
 ];
 
 export default function Home({ onSelect }: Props) {
@@ -22,13 +26,13 @@ export default function Home({ onSelect }: Props) {
       <div className="hero-annotation"><span className="annotation-line" />PRIVATE, LOCAL<br />& READY TO FOLD</div>
       <div className="hero-serial">FOLD / FILES / 01</div>
     </section>
-    <div className="home-section-head"><div><span className="eyebrow">THE TOOL SHELF</span><h2>What are we working on?</h2></div><span className="tool-count">09 <span>TOOLS</span></span></div>
+    <div className="home-section-head"><div><span className="eyebrow">THE TOOL SHELF</span><h2>What are we working on?</h2></div><span className="tool-count">13 <span>TOOLS</span></span></div>
     <section className="tool-card-grid" aria-label="PDF tools">
       {cards.map(({ key, title, detail, icon: Icon, number, color }) => <button className={`tool-card accent-${color}`} key={key} onClick={() => onSelect(key)}><span className="tool-card-top"><span className="tool-card-number">{number} / TASK</span><ArrowUpRight className="tool-card-arrow" size={18} /></span><span className="tool-icon"><Icon size={20} strokeWidth={1.8} /></span><strong>{title}</strong><span className="tool-card-detail">{detail}</span></button>)}
     </section>
     <section className="home-bottom-row">
       <div className="locality-panel"><span className="locality-seal"><span>F</span><i /></span><div><span className="eyebrow">YOUR FILES, YOUR DEVICE</span><h3>Private from first click.</h3><p>PDF work happens inside this browser tab. Nothing is uploaded to an app server.</p></div><span className="locality-caption">NO SERVER<br />NO ACCOUNT<br />NO SURPRISES</span></div>
-      <div className="later-panel"><span className="eyebrow">ON THE FUTURE SHELF</span><h3>Not in this first release.</h3><div className="later-item"><ScanText size={15} /><span>OCR & searchable scans</span><span className="later-tag">LATER</span></div><div className="later-item"><FileSpreadsheet size={15} /><span>Word, Excel & PowerPoint</span><span className="later-tag">LATER</span></div></div>
+      <div className="later-panel"><span className="eyebrow">ON THE FUTURE SHELF</span><h3>Coming in Phase 3.</h3><div className="later-item"><FileSpreadsheet size={15} /><span>PDF to Excel & Word</span><span className="later-tag">PHASE 3</span></div><div className="later-item"><Sparkles size={15} /><span>Local AI Summarizer</span><span className="later-tag">PHASE 3</span></div></div>
     </section>
   </div>;
 }

@@ -65,6 +65,8 @@ const aiCollaborators = [
 const openSourceCredits = [
   { name: 'pdf-lib', author: 'Hopding', desc: 'In-browser PDF mutation, merging, splitting & extraction' },
   { name: 'PDF.js', author: 'Mozilla', desc: 'High-fidelity PDF page parsing and rasterization' },
+  { name: 'Tesseract.js', author: 'Naptha', desc: 'Client-side WebAssembly OCR and machine vision' },
+  { name: 'Pixelmatch', author: 'Mapbox', desc: 'Fast, pixel-level visual document difference engine' },
   { name: 'React 19', author: 'Meta', desc: 'Component architecture and state primitives' },
   { name: 'Vite', author: 'Evan You & Community', desc: 'Lightning-fast frontend toolchain and packaging' },
   { name: 'JSZip', author: 'Stuk', desc: 'Client-side ZIP compression and asset packing' },
