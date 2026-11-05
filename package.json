@@ -2,6 +2,12 @@
   "name": "free-pdf-toolkit",
   "version": "0.1.0",
   "private": true,
+  "description": "Fold — Private, 100% Client-Side PDF Toolkit. Crafted with ❤️ by NasirPintu.",
+  "author": {
+    "name": "NasirPintu",
+    "url": "https://github.com/nasiropintu"
+  },
+  "homepage": "https://nasiropintu.github.io/fold/",
   "type": "module",
   "packageManager": "pnpm@11.25.0",
   "scripts": {

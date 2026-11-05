@@ -1,4 +1,4 @@
-import { degrees, PDFDocument, PageSizes } from 'pdf-lib';
+import { degrees, PDFDocument, PageSizes, rgb, StandardFonts } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import JSZip from 'jszip';
 
@@ -374,4 +374,271 @@ export function downloadBlob(blob: Blob, filename: string): void {
   anchor.click();
   anchor.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+export type WatermarkPosition = 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'tiled';
+
+export type WatermarkOptions = {
+  type: 'text' | 'image';
+  text?: string;
+  imageFile?: File;
+  fontSize?: number;
+  colorHex?: string;
+  opacity?: number;
+  rotation?: number;
+  position?: WatermarkPosition;
+  pageRange?: string;
+};
+
+export type PageNumberPosition =
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'top-center'
+  | 'top-right'
+  | 'top-left';
+
+export type PageNumberOptions = {
+  position: PageNumberPosition;
+  format: string;
+  startPageNumber: number;
+  skipFirstPage: boolean;
+  fontSize: number;
+  colorHex: string;
+  margin: number;
+};
+
+export type SignaturePlacement = {
+  pageNumber: number;
+  xRatio: number;
+  yRatio: number;
+  widthRatio: number;
+  heightRatio: number;
+};
+
+export function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const sanitized = hex.replace('#', '');
+  const bigint = parseInt(sanitized, 16);
+  if (isNaN(bigint)) return { r: 0, g: 0, b: 0 };
+  return {
+    r: ((bigint >> 16) & 255) / 255,
+    g: ((bigint >> 8) & 255) / 255,
+    b: (bigint & 255) / 255,
+  };
+}
+
+export async function applyWatermark(file: File, options: WatermarkOptions): Promise<Uint8Array> {
+  const doc = await loadPdfLibDocument(file);
+  const font = await doc.embedFont(StandardFonts.HelveticaBold);
+  const pageCount = doc.getPageCount();
+
+  let targetPages: number[];
+  if (options.pageRange && options.pageRange.trim()) {
+    targetPages = parsePageRanges(options.pageRange, pageCount);
+  } else {
+    targetPages = Array.from({ length: pageCount }, (_, i) => i);
+  }
+
+  const opacity = Math.max(0.05, Math.min(1, options.opacity ?? 0.3));
+  const rotationDegrees = degrees(options.rotation ?? 45);
+  const color = hexToRgb(options.colorHex ?? '#6b7280');
+  const textColor = rgb(color.r, color.g, color.b);
+
+  let embeddedImage;
+  if (options.type === 'image' && options.imageFile) {
+    const imgBytes = await options.imageFile.arrayBuffer();
+    const isPng = options.imageFile.type.includes('png') || options.imageFile.name.toLowerCase().endsWith('.png');
+    embeddedImage = isPng ? await doc.embedPng(imgBytes) : await doc.embedJpg(imgBytes);
+  }
+
+  for (const pageIndex of targetPages) {
+    const page = doc.getPage(pageIndex);
+    const { width, height } = page.getSize();
+
+    if (options.type === 'text') {
+      const text = options.text?.trim() || 'CONFIDENTIAL';
+      const fontSize = options.fontSize || 48;
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
+      const textHeight = font.heightAtSize(fontSize);
+
+      if (options.position === 'tiled') {
+        const stepX = Math.max(160, textWidth * 1.3);
+        const stepY = Math.max(120, textHeight * 4);
+        for (let x = -width * 0.2; x < width * 1.2; x += stepX) {
+          for (let y = -height * 0.2; y < height * 1.2; y += stepY) {
+            page.drawText(text, {
+              x,
+              y,
+              size: fontSize * 0.75,
+              font,
+              color: textColor,
+              opacity: opacity * 0.7,
+              rotate: rotationDegrees,
+            });
+          }
+        }
+      } else {
+        let x = (width - textWidth) / 2;
+        let y = (height - textHeight) / 2;
+        const margin = 40;
+
+        if (options.position === 'top-left') {
+          x = margin;
+          y = height - margin - textHeight;
+        } else if (options.position === 'top-right') {
+          x = width - margin - textWidth;
+          y = height - margin - textHeight;
+        } else if (options.position === 'bottom-left') {
+          x = margin;
+          y = margin;
+        } else if (options.position === 'bottom-right') {
+          x = width - margin - textWidth;
+          y = margin;
+        }
+
+        page.drawText(text, {
+          x,
+          y,
+          size: fontSize,
+          font,
+          color: textColor,
+          opacity,
+          rotate: options.position === 'center' ? rotationDegrees : degrees(0),
+        });
+      }
+    } else if (embeddedImage) {
+      const imgAspect = embeddedImage.width / embeddedImage.height;
+      const targetWidth = Math.min(width * 0.5, 300);
+      const targetHeight = targetWidth / imgAspect;
+
+      let x = (width - targetWidth) / 2;
+      let y = (height - targetHeight) / 2;
+      const margin = 40;
+
+      if (options.position === 'top-left') {
+        x = margin;
+        y = height - margin - targetHeight;
+      } else if (options.position === 'top-right') {
+        x = width - margin - targetWidth;
+        y = height - margin - targetHeight;
+      } else if (options.position === 'bottom-left') {
+        x = margin;
+        y = margin;
+      } else if (options.position === 'bottom-right') {
+        x = width - margin - targetWidth;
+        y = margin;
+      }
+
+      page.drawImage(embeddedImage, {
+        x,
+        y,
+        width: targetWidth,
+        height: targetHeight,
+        opacity,
+        rotate: options.position === 'center' && options.rotation ? rotationDegrees : degrees(0),
+      });
+    }
+  }
+
+  return doc.save();
+}
+
+export async function applyPageNumbers(file: File, options: PageNumberOptions): Promise<Uint8Array> {
+  const doc = await loadPdfLibDocument(file);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const pageCount = doc.getPageCount();
+
+  const color = hexToRgb(options.colorHex || '#374151');
+  const textColor = rgb(color.r, color.g, color.b);
+  const fontSize = options.fontSize || 10;
+  const margin = options.margin || 25;
+
+  const startIndex = options.skipFirstPage ? 1 : 0;
+
+  for (let i = startIndex; i < pageCount; i += 1) {
+    const page = doc.getPage(i);
+    const { width, height } = page.getSize();
+    const pageNumber = i + 1;
+    const displayNum = options.skipFirstPage ? i : pageNumber;
+    const totalDisplay = options.skipFirstPage ? pageCount - 1 : pageCount;
+
+    const label = options.format
+      .replace('{n}', String(displayNum))
+      .replace('{total}', String(totalDisplay));
+
+    const textWidth = font.widthOfTextAtSize(label, fontSize);
+    const textHeight = font.heightAtSize(fontSize);
+
+    let x = (width - textWidth) / 2;
+    let y = margin;
+
+    switch (options.position) {
+      case 'bottom-center':
+        x = (width - textWidth) / 2;
+        y = margin;
+        break;
+      case 'bottom-right':
+        x = width - margin - textWidth;
+        y = margin;
+        break;
+      case 'bottom-left':
+        x = margin;
+        y = margin;
+        break;
+      case 'top-center':
+        x = (width - textWidth) / 2;
+        y = height - margin - textHeight;
+        break;
+      case 'top-right':
+        x = width - margin - textWidth;
+        y = height - margin - textHeight;
+        break;
+      case 'top-left':
+        x = margin;
+        y = height - margin - textHeight;
+        break;
+    }
+
+    page.drawText(label, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: textColor,
+    });
+  }
+
+  return doc.save();
+}
+
+export async function applySignature(
+  file: File,
+  signaturePngBytes: Uint8Array,
+  placement: SignaturePlacement
+): Promise<Uint8Array> {
+  const doc = await loadPdfLibDocument(file);
+  const pageIndex = placement.pageNumber - 1;
+  if (pageIndex < 0 || pageIndex >= doc.getPageCount()) {
+    throw new Error('Selected page is outside document range.');
+  }
+
+  const page = doc.getPage(pageIndex);
+  const { width, height } = page.getSize();
+
+  const embeddedSig = await doc.embedPng(signaturePngBytes);
+
+  const drawWidth = placement.widthRatio * width;
+  const drawHeight = placement.heightRatio * height;
+  const drawX = placement.xRatio * width;
+  // Convert from web top-left coords to PDF bottom-left coords
+  const drawY = height - (placement.yRatio * height) - drawHeight;
+
+  page.drawImage(embeddedSig, {
+    x: drawX,
+    y: drawY,
+    width: drawWidth,
+    height: drawHeight,
+  });
+
+  return doc.save();
 }

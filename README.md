@@ -1,6 +1,49 @@
 # Fold — Free PDF Toolkit
 
-Fold is an original, browser-based PDF utility. Processing runs on the visitor's device; the app does not upload selected documents to an application server.
+> **Crafted with ❤️ by NasirPintu**  
+> *100% Free · Private by Design · Zero Server Uploads*
+
+Fold is a private, browser-based PDF utility suite where all processing runs directly on your device. The app does not upload selected documents to any server or cloud API.
+
+---
+
+## Creator & Vision
+
+**NasirPintu** (Mohammad Nasiruddin Pintu)  
+*Creator, Product Architect & Open-Source Builder*
+
+* **Mission:** Democratizing powerful digital tools by engineering zero-cost, privacy-first software that processes files 100% locally on the user's hardware.
+* **GitHub:** [@nasiropintu](https://github.com/nasiropintu)
+* **X (Twitter):** [@nasiropintu](https://x.com/nasiropintu)
+* **Instagram:** [@the_np2](https://www.instagram.com/the_np2/)
+* **Facebook:** [mohammadnasiruddin.pintu](https://www.facebook.com/mohammadnasiruddin.pintu/)
+
+---
+
+## Human-Directed AI Agent Collaboration
+
+Fold is architected and directed by **NasirPintu**, developed in active synergy with frontier artificial intelligence assistants and autonomous coding agents:
+
+* **Gemini** *(Google DeepMind)* — Architectural reasoning, full-stack implementation & agent workflows.
+* **Manus** — Autonomous planning, system analysis & task orchestration.
+* **ChatGPT** *(OpenAI)* — Logic synthesis, edge-case optimization & refactoring.
+* **DeepSeek** — Algorithmic problem-solving & deep code intelligence.
+* **Claude** *(Anthropic)* — Systems reasoning, code clarity & technical drafting.
+* **Vibe by Mistral** — Fast code generation & pragmatic engineering.
+
+---
+
+## Open-Source Community Credits
+
+Fold is proudly built upon exceptional open-source libraries:
+* **[PDF.js](https://mozilla.github.io/pdf.js/)** *(Mozilla)* — In-browser PDF reading, rendering, and rasterization.
+* **[pdf-lib](https://pdf-lib.js.org/)** *(Hopding)* — Client-side PDF page assembly, splitting, rotation, and mutation.
+* **[React 19](https://react.dev/)** *(Meta)* — Declarative UI framework.
+* **[Vite](https://vitejs.dev/)** *(Yuxi Evan You & Vite Team)* — Modern frontend build tooling.
+* **[JSZip](https://stuk.github.io/jszip/)** *(Stuk)* — In-memory ZIP archive generation for file exports.
+* **[Lucide Icons](https://lucide.dev/)** *(Lucide Community)* — Crisp open-source interface iconography.
+
+---
 
 ## Modules
 

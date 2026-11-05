@@ -9,6 +9,10 @@
 
 ## 1. Project Overview & Philosophy
 **Fold** is a private, client-side PDF utility application built with React, Vite, and TypeScript.
+* **Tagline:** *"Crafted with ❤️ by NasirPintu"*
+* **Creator:** **NasirPintu** (Mohammad Nasiruddin Pintu) — [GitHub](https://github.com/nasiropintu) | [X](https://x.com/nasiropintu) | [Instagram](https://www.instagram.com/the_np2/) | [Facebook](https://www.facebook.com/mohammadnasiruddin.pintu/)
+* **Attribution Standard:** Documented in [`CREATOR_STANDARDS.md`](./CREATOR_STANDARDS.md) — all future features and projects must include the tagline, About modal, AI collaboration credits (Gemini, Manus, ChatGPT, DeepSeek, Claude, Vibe by Mistral), and open-source community credits.
+* **Developer Workflow Rule:** Always provide git commit and push commands to the user after every milestone and feature completion.
 * **100% Client-Side:** All document processing (reading, rendering, merging, rasterizing, compressing, and exporting) runs in the user's browser via Web Workers and HTML5 Canvas.
 * **Zero Server Uploads:** No files are uploaded to any server or cloud API; completely private by design.
 * **Zero Paid Services:** Built entirely on open-source libraries without subscriptions or external APIs.
@@ -54,6 +58,9 @@ fold/
 4. **Images to PDF (`ImagesToPdfTool.tsx`)**: Convert JPG and PNG images into a PDF with A4/fit sizing and portrait/landscape orientations.
 5. **Compress PDF (`CompressTool.tsx`)**: Rasterized compression presets with memory estimation, cancellation (`AbortSignal`), and live progress.
 6. **PDF to Images (`ExportImagesTool.tsx`)**: Export PDF pages to JPG or PNG files packaged in a ZIP.
+7. **Sign PDF (`SignTool.tsx`)**: Draw, type, or upload a digital signature and visually position/stamp it on any PDF page.
+8. **Watermark PDF (`WatermarkTool.tsx`)**: Stamp customizable text or brand logos with rotation, opacity, position, and page range controls.
+9. **Page Numbers (`PageNumbersTool.tsx`)**: Add formatted header or footer page numbering with customizable placement, margins, and cover page skipping.
 
 ### Memory & Stability Safeguards (`src/lib/pdf.ts`)
 * $\le 100\text{ MB}$ per input PDF; $\le 200\text{ pages}$ per document.

@@ -1,6 +1,6 @@
-import { ArrowUpRight, FileImage, Combine, Files, ImagePlus, Scissors, WandSparkles, ScanText, FileSpreadsheet } from 'lucide-react';
+import { ArrowUpRight, Binary, FileImage, Combine, Files, ImagePlus, PenTool, Scissors, Stamp, WandSparkles, ScanText, FileSpreadsheet } from 'lucide-react';
 
-type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export';
+type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers';
 type Props = { onSelect: (key: ToolKey) => void };
 const cards = [
   { key: 'merge' as const, title: 'Merge PDFs', detail: 'Make one file from many.', icon: Combine, number: '01', color: 'blue' },
@@ -9,6 +9,9 @@ const cards = [
   { key: 'images' as const, title: 'Images to PDF', detail: 'Make a PDF from JPG or PNG.', icon: ImagePlus, number: '04', color: 'green' },
   { key: 'compress' as const, title: 'Compress PDF', detail: 'A lighter copy, your quality choice.', icon: WandSparkles, number: '05', color: 'pink' },
   { key: 'export' as const, title: 'PDF to images', detail: 'Save pages as JPG or PNG.', icon: FileImage, number: '06', color: 'yellow' },
+  { key: 'sign' as const, title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green' },
+  { key: 'watermark' as const, title: 'Watermark PDF', detail: 'Stamp text or custom logos.', icon: Stamp, number: '08', color: 'blue' },
+  { key: 'page-numbers' as const, title: 'Page numbers', detail: 'Add header or footer pagination.', icon: Binary, number: '09', color: 'orange' },
 ];
 
 export default function Home({ onSelect }: Props) {
@@ -19,7 +22,7 @@ export default function Home({ onSelect }: Props) {
       <div className="hero-annotation"><span className="annotation-line" />PRIVATE, LOCAL<br />& READY TO FOLD</div>
       <div className="hero-serial">FOLD / FILES / 01</div>
     </section>
-    <div className="home-section-head"><div><span className="eyebrow">THE TOOL SHELF</span><h2>What are we working on?</h2></div><span className="tool-count">06 <span>TOOLS</span></span></div>
+    <div className="home-section-head"><div><span className="eyebrow">THE TOOL SHELF</span><h2>What are we working on?</h2></div><span className="tool-count">09 <span>TOOLS</span></span></div>
     <section className="tool-card-grid" aria-label="PDF tools">
       {cards.map(({ key, title, detail, icon: Icon, number, color }) => <button className={`tool-card accent-${color}`} key={key} onClick={() => onSelect(key)}><span className="tool-card-top"><span className="tool-card-number">{number} / TASK</span><ArrowUpRight className="tool-card-arrow" size={18} /></span><span className="tool-icon"><Icon size={20} strokeWidth={1.8} /></span><strong>{title}</strong><span className="tool-card-detail">{detail}</span></button>)}
     </section>
