@@ -76,6 +76,8 @@ fold/
 15. **PDF & Excel (`ExcelTool.tsx`)**: Dual-mode converter — extract PDF table structures into Excel (.xlsx) workbooks or convert spreadsheets into styled PDF tables.
 16. **AI Summarizer (`AiSummarizerTool.tsx`)**: Local document summarization supporting Chrome Built-in AI with on-device algorithmic fallback.
 17. **Workflow Automator (`WorkflowTool.tsx`)**: Sequential pipeline builder chaining watermarks, pagination, page rotations, and rasterized compression into a single run.
+18. **Protect PDF (`ProtectTool.tsx`)**: In-browser AES-256 and RC4 password encryption with granular permissions (printing, copying, form filling, annotations).
+19. **Unlock PDF (`UnlockTool.tsx`)**: Client-side decryption and password removal for encrypted PDFs using pure Web Crypto without server calls.
 
 ### Memory & Stability Safeguards (`src/lib/pdf.ts`)
 * $\le 100\text{ MB}$ per input PDF; $\le 200\text{ pages}$ per document.

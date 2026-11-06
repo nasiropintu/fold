@@ -12,6 +12,8 @@ import {
   Files,
   FileText,
   ImagePlus,
+  Lock,
+  LockOpen,
   PenTool,
   ScanText,
   Scissors,
@@ -39,7 +41,9 @@ export type ToolKey =
   | 'markdown'
   | 'excel'
   | 'summarizer'
-  | 'workflow';
+  | 'workflow'
+  | 'protect'
+  | 'unlock';
 
 export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
 
@@ -68,6 +72,8 @@ const cards: CardItem[] = [
   { key: 'sign', title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green', category: 'security' },
   { key: 'watermark', title: 'Watermark PDF', detail: 'Stamp text or custom logos.', icon: Stamp, number: '08', color: 'blue', category: 'security' },
   { key: 'redact', title: 'Redact PDF', detail: 'Permanently purge confidential data.', icon: EyeOff, number: '12', color: 'pink', category: 'security' },
+  { key: 'protect', title: 'Protect PDF', detail: 'Lock with AES-256 password & permissions.', icon: Lock, number: '18', color: 'pink', category: 'security' },
+  { key: 'unlock', title: 'Unlock PDF', detail: 'Remove passwords & restrictions.', icon: LockOpen, number: '19', color: 'green', category: 'security' },
 
   // Conversions & Data
   { key: 'markdown', title: 'PDF to Markdown', detail: 'Clean structured text & headings.', icon: FileText, number: '14', color: 'orange', category: 'conversions' },
@@ -133,7 +139,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'all'}
         >
-          All Tools <span className="category-tab-badge">17</span>
+          All Tools <span className="category-tab-badge">19</span>
         </button>
         <button
           className={`category-tab-btn ${selectedCat === 'organize' ? 'active' : ''}`}
@@ -149,7 +155,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'security'}
         >
-          Security & Privacy <span className="category-tab-badge">3</span>
+          Security & Privacy <span className="category-tab-badge">5</span>
         </button>
         <button
           className={`category-tab-btn ${selectedCat === 'conversions' ? 'active' : ''}`}
@@ -220,17 +226,17 @@ export default function Home({ onSelect }: Props) {
         </div>
 
         <div className="later-panel">
-          <span className="eyebrow">PHASE 1, 2 & 3 COMPLETE</span>
-          <h3>All 17 Tools Unlocked.</h3>
+          <span className="eyebrow">PHASE 4 SECURITY SUITE</span>
+          <h3>19 Tools Active & Free.</h3>
           <div className="later-item">
             <CheckCircle size={16} color="#10b981" />
-            <span>PDF to Markdown & Excel Tools</span>
-            <span className="later-tag">READY</span>
+            <span>Protect PDF (AES-256 Encryption)</span>
+            <span className="later-tag">ACTIVE</span>
           </div>
           <div className="later-item">
             <CheckCircle size={16} color="#10b981" />
-            <span>Local AI Summarizer & Workflow Chain</span>
-            <span className="later-tag">READY</span>
+            <span>Unlock PDF (Password Decryption)</span>
+            <span className="later-tag">ACTIVE</span>
           </div>
         </div>
       </section>

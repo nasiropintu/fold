@@ -68,6 +68,7 @@ const openSourceCredits = [
   { name: 'Tesseract.js', author: 'Naptha', desc: 'Client-side WebAssembly OCR and machine vision' },
   { name: 'Pixelmatch', author: 'Mapbox', desc: 'Fast, pixel-level visual document difference engine' },
   { name: 'SheetJS (xlsx)', author: 'SheetJS Community', desc: 'In-browser spreadsheet parsing and Excel workbook creation' },
+  { name: 'pdf-encrypt / decrypt', author: 'PDFSmaller', desc: 'Zero-dependency client-side AES-256 and RC4 password protection and decryption' },
   { name: 'React 19', author: 'Meta', desc: 'Component architecture and state primitives' },
   { name: 'Vite', author: 'Evan You & Community', desc: 'Lightning-fast frontend toolchain and packaging' },
   { name: 'JSZip', author: 'Stuk', desc: 'Client-side ZIP compression and asset packing' },

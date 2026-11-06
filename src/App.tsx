@@ -14,7 +14,9 @@ import {
   Heart,
   ImagePlus,
   Info,
+  Lock,
   LockKeyhole,
+  LockOpen,
   Menu,
   PenTool,
   ScanText,
@@ -46,6 +48,8 @@ const PdfToMarkdownTool = lazy(() => import('./features/PdfToMarkdownTool'));
 const ExcelTool = lazy(() => import('./features/ExcelTool'));
 const AiSummarizerTool = lazy(() => import('./features/AiSummarizerTool'));
 const WorkflowTool = lazy(() => import('./features/WorkflowTool'));
+const ProtectTool = lazy(() => import('./features/ProtectTool'));
+const UnlockTool = lazy(() => import('./features/UnlockTool'));
 
 export type ToolKey =
   | 'home'
@@ -65,7 +69,9 @@ export type ToolKey =
   | 'markdown'
   | 'excel'
   | 'summarizer'
-  | 'workflow';
+  | 'workflow'
+  | 'protect'
+  | 'unlock';
 
 export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
 
@@ -104,6 +110,8 @@ const tools: ToolInfo[] = [
   { key: 'sign', label: 'Sign PDF', short: 'Stamp digital signature', description: 'Draw, type, or upload your signature and stamp it onto any page.', icon: PenTool, eyebrow: 'E-SIGN DOCUMENTS', category: 'security' },
   { key: 'watermark', label: 'Watermark PDF', short: 'Stamp text or logos', description: 'Add customizable text or brand watermark stamps across pages.', icon: Stamp, eyebrow: 'PROTECT & BRAND', category: 'security' },
   { key: 'redact', label: 'Redact PDF', short: 'Sanitize confidential data', description: 'Permanently black out and eliminate sensitive information from document pages.', icon: EyeOff, eyebrow: 'PRIVACY & SECURITY', category: 'security' },
+  { key: 'protect', label: 'Protect PDF', short: 'Password encrypt', description: 'Lock your document with AES-256 password encryption and set permissions.', icon: Lock, eyebrow: 'ENCRYPT DOCUMENT', category: 'security' },
+  { key: 'unlock', label: 'Unlock PDF', short: 'Remove password', description: 'Decrypt password-protected PDFs and strip security restrictions.', icon: LockOpen, eyebrow: 'DECRYPT DOCUMENT', category: 'security' },
 
   // Conversions & Data
   { key: 'markdown', label: 'PDF to Markdown', short: 'Clean structured text', description: 'Extract clean Markdown with automatic heading levels and paragraph spacing.', icon: FileText, eyebrow: 'MARKDOWN EXTRACTION', category: 'conversions' },
@@ -161,6 +169,8 @@ export default function App() {
       case 'excel': return <ExcelTool />;
       case 'summarizer': return <AiSummarizerTool />;
       case 'workflow': return <WorkflowTool />;
+      case 'protect': return <ProtectTool />;
+      case 'unlock': return <UnlockTool />;
       default: return <Home onSelect={go} />;
     }
   };
@@ -180,7 +190,7 @@ export default function App() {
           <input
             type="text"
             className="sidebar-search-input"
-            placeholder="Search 17 tools…"
+            placeholder="Search 19 tools…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
