@@ -42,6 +42,8 @@ Fold is proudly built upon exceptional open-source libraries:
 * **[Pixelmatch](https://github.com/mapbox/pixelmatch)** *(Mapbox)* — High-speed, pixel-level visual difference engine.
 * **[@pdfsmaller/pdf-encrypt & decrypt](https://github.com/pdfsmaller)** — Zero-dependency Web Crypto AES-256 and RC4 document encryption and decryption.
 * **[SheetJS (xlsx)](https://sheetjs.com/)** *(SheetJS Community)* — In-browser spreadsheet parsing and Excel workbook creation.
+* **[docx](https://docx.js.org/)** *(Dolan Miu & Community)* — In-browser Microsoft Word (.docx) document generation.
+* **[mammoth.js](https://github.com/mwilliamson/mammoth.js)** *(Michael Searle)* — Client-side Word (.docx) AST parsing and raw text extraction.
 * **[React 19](https://react.dev/)** *(Meta)* — Declarative UI framework.
 * **[Vite](https://vitejs.dev/)** *(Yuxi Evan You & Vite Team)* — Modern frontend build tooling.
 * **[JSZip](https://stuk.github.io/jszip/)** *(Stuk)* — In-memory ZIP archive generation for file exports.

@@ -78,6 +78,11 @@ fold/
 17. **Workflow Automator (`WorkflowTool.tsx`)**: Sequential pipeline builder chaining watermarks, pagination, page rotations, and rasterized compression into a single run.
 18. **Protect PDF (`ProtectTool.tsx`)**: In-browser AES-256 and RC4 password encryption with granular permissions (printing, copying, form filling, annotations).
 19. **Unlock PDF (`UnlockTool.tsx`)**: Client-side decryption and password removal for encrypted PDFs using pure Web Crypto without server calls.
+20. **Rotate & Crop PDF (`CropTool.tsx`)**: Interactive canvas crop box, margin presets, and 90°/180° orientation adjustment modifying PDF `CropBox` and `MediaBox` vectors directly.
+21. **PDF to Word (`PdfToWordTool.tsx`)**: In-browser conversion of PDF text, font hierarchies, and headings into editable Microsoft Word (.docx) files via `docx`.
+22. **Word to PDF (`WordToPdfTool.tsx`)**: Client-side `.docx` AST parsing via `mammoth.js` and layout rendering onto paginated PDF pages via `pdf-lib`.
+23. **Scan to PDF (`ScanTool.tsx`)**: Direct hardware camera capture via `navigator.mediaDevices.getUserMedia` with B&W/grayscale contrast filters and multi-page compiling.
+24. **Repair PDF (`RepairTool.tsx`)**: Reconstructs damaged, corrupted, or truncated PDFs by rebuilding broken cross-reference (XRef) tables and repairing trailer markers.
 
 ### Memory & Stability Safeguards (`src/lib/pdf.ts`)
 * $\le 100\text{ MB}$ per input PDF; $\le 200\text{ pages}$ per document.

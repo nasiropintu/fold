@@ -69,6 +69,8 @@ const openSourceCredits = [
   { name: 'Pixelmatch', author: 'Mapbox', desc: 'Fast, pixel-level visual document difference engine' },
   { name: 'SheetJS (xlsx)', author: 'SheetJS Community', desc: 'In-browser spreadsheet parsing and Excel workbook creation' },
   { name: 'pdf-encrypt / decrypt', author: 'PDFSmaller', desc: 'Zero-dependency client-side AES-256 and RC4 password protection and decryption' },
+  { name: 'docx', author: 'Dolan Miu & Community', desc: 'In-browser Microsoft Word (.docx) document generation and formatting' },
+  { name: 'mammoth.js', author: 'Michael Searle', desc: 'Client-side Word (.docx) AST parsing and raw text extraction' },
   { name: 'React 19', author: 'Meta', desc: 'Component architecture and state primitives' },
   { name: 'Vite', author: 'Evan You & Community', desc: 'Lightning-fast frontend toolchain and packaging' },
   { name: 'JSZip', author: 'Stuk', desc: 'Client-side ZIP compression and asset packing' },

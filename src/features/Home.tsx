@@ -2,10 +2,13 @@ import { useState } from 'react';
 import {
   ArrowUpRight,
   Binary,
+  Camera,
   CheckCircle,
   Combine,
+  Crop,
   EyeOff,
   FileCheck,
+  FileCode,
   FileDiff,
   FileImage,
   FileSpreadsheet,
@@ -21,6 +24,7 @@ import {
   Stamp,
   WandSparkles,
   Workflow,
+  Wrench,
 } from 'lucide-react';
 
 export type ToolKey =
@@ -43,7 +47,12 @@ export type ToolKey =
   | 'summarizer'
   | 'workflow'
   | 'protect'
-  | 'unlock';
+  | 'unlock'
+  | 'crop'
+  | 'pdf-to-word'
+  | 'word-to-pdf'
+  | 'scan'
+  | 'repair';
 
 export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
 
@@ -67,6 +76,7 @@ const cards: CardItem[] = [
   { key: 'images', title: 'Images to PDF', detail: 'Make a PDF from JPG or PNG.', icon: ImagePlus, number: '04', color: 'green', category: 'organize' },
   { key: 'export', title: 'PDF to images', detail: 'Save pages as JPG or PNG.', icon: FileImage, number: '06', color: 'yellow', category: 'organize' },
   { key: 'page-numbers', title: 'Page numbers', detail: 'Add header or footer pagination.', icon: Binary, number: '09', color: 'orange', category: 'organize' },
+  { key: 'crop', title: 'Rotate & Crop', detail: 'Trim margins with visual crop boxes.', icon: Crop, number: '20', color: 'orange', category: 'organize' },
 
   // Security & Privacy
   { key: 'sign', title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green', category: 'security' },
@@ -80,12 +90,16 @@ const cards: CardItem[] = [
   { key: 'excel', title: 'PDF & Excel', detail: 'Convert tables & spreadsheets.', icon: FileSpreadsheet, number: '15', color: 'green', category: 'conversions' },
   { key: 'compress', title: 'Compress PDF', detail: 'A lighter copy, your quality choice.', icon: WandSparkles, number: '05', color: 'pink', category: 'conversions' },
   { key: 'forms', title: 'Fill Forms', detail: 'Fill, edit & flatten AcroForms.', icon: FileCheck, number: '13', color: 'blue', category: 'conversions' },
+  { key: 'pdf-to-word', title: 'PDF to Word', detail: 'Convert to editable Word (.docx).', icon: FileText, number: '21', color: 'blue', category: 'conversions' },
+  { key: 'word-to-pdf', title: 'Word to PDF', detail: 'Convert Word (.docx) to PDF.', icon: FileCode, number: '22', color: 'green', category: 'conversions' },
 
   // Intelligence & AI
   { key: 'summarizer', title: 'AI Summarizer', detail: 'Local on-device text distillation.', icon: Sparkles, number: '16', color: 'violet', category: 'automation' },
   { key: 'ocr', title: 'OCR PDF', detail: 'Extract text via in-browser vision.', icon: ScanText, number: '11', color: 'green', category: 'automation' },
   { key: 'compare', title: 'Compare PDFs', detail: 'Pixel-level visual document diff.', icon: FileDiff, number: '10', color: 'violet', category: 'automation' },
   { key: 'workflow', title: 'Workflow Automator', detail: 'Chain multi-operation pipelines.', icon: Workflow, number: '17', color: 'blue', category: 'automation' },
+  { key: 'scan', title: 'Scan to PDF', detail: 'Webcam snap & document filters.', icon: Camera, number: '23', color: 'pink', category: 'automation' },
+  { key: 'repair', title: 'Repair PDF', detail: 'Rebuild broken XRef & damaged streams.', icon: Wrench, number: '24', color: 'yellow', category: 'automation' },
 ];
 
 const categoryLabels: Record<ToolCategory, string> = {
@@ -139,7 +153,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'all'}
         >
-          All Tools <span className="category-tab-badge">19</span>
+          All Tools <span className="category-tab-badge">24</span>
         </button>
         <button
           className={`category-tab-btn ${selectedCat === 'organize' ? 'active' : ''}`}
@@ -147,7 +161,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'organize'}
         >
-          Organize & Pages <span className="category-tab-badge">6</span>
+          Organize & Pages <span className="category-tab-badge">7</span>
         </button>
         <button
           className={`category-tab-btn ${selectedCat === 'security' ? 'active' : ''}`}
@@ -163,7 +177,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'conversions'}
         >
-          Conversions & Data <span className="category-tab-badge">4</span>
+          Conversions & Data <span className="category-tab-badge">6</span>
         </button>
         <button
           className={`category-tab-btn ${selectedCat === 'automation' ? 'active' : ''}`}
@@ -171,7 +185,7 @@ export default function Home({ onSelect }: Props) {
           role="tab"
           aria-selected={selectedCat === 'automation'}
         >
-          Intelligence & AI <span className="category-tab-badge">4</span>
+          Intelligence & AI <span className="category-tab-badge">6</span>
         </button>
       </div>
 
@@ -226,17 +240,17 @@ export default function Home({ onSelect }: Props) {
         </div>
 
         <div className="later-panel">
-          <span className="eyebrow">PHASE 4 SECURITY SUITE</span>
-          <h3>19 Tools Active & Free.</h3>
+          <span className="eyebrow">ALL 24 SUITE TOOLS COMPLETE</span>
+          <h3>100% Free & Serverless.</h3>
           <div className="later-item">
             <CheckCircle size={16} color="#10b981" />
-            <span>Protect PDF (AES-256 Encryption)</span>
-            <span className="later-tag">ACTIVE</span>
+            <span>Office Word Suite (.docx) Active</span>
+            <span className="later-tag">READY</span>
           </div>
           <div className="later-item">
             <CheckCircle size={16} color="#10b981" />
-            <span>Unlock PDF (Password Decryption)</span>
-            <span className="later-tag">ACTIVE</span>
+            <span>Hardware Camera Scanner & PDF Repair</span>
+            <span className="later-tag">READY</span>
           </div>
         </div>
       </section>

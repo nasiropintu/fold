@@ -3,9 +3,12 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Binary,
+  Camera,
   Combine,
+  Crop,
   EyeOff,
   FileCheck,
+  FileCode,
   FileDiff,
   FileImage,
   FileSpreadsheet,
@@ -26,6 +29,7 @@ import {
   Stamp,
   WandSparkles,
   Workflow,
+  Wrench,
   X,
 } from 'lucide-react';
 import Home from './features/Home';
@@ -50,6 +54,11 @@ const AiSummarizerTool = lazy(() => import('./features/AiSummarizerTool'));
 const WorkflowTool = lazy(() => import('./features/WorkflowTool'));
 const ProtectTool = lazy(() => import('./features/ProtectTool'));
 const UnlockTool = lazy(() => import('./features/UnlockTool'));
+const CropTool = lazy(() => import('./features/CropTool'));
+const PdfToWordTool = lazy(() => import('./features/PdfToWordTool'));
+const WordToPdfTool = lazy(() => import('./features/WordToPdfTool'));
+const ScanTool = lazy(() => import('./features/ScanTool'));
+const RepairTool = lazy(() => import('./features/RepairTool'));
 
 export type ToolKey =
   | 'home'
@@ -71,7 +80,12 @@ export type ToolKey =
   | 'summarizer'
   | 'workflow'
   | 'protect'
-  | 'unlock';
+  | 'unlock'
+  | 'crop'
+  | 'pdf-to-word'
+  | 'word-to-pdf'
+  | 'scan'
+  | 'repair';
 
 export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
 
@@ -105,6 +119,7 @@ const tools: ToolInfo[] = [
   { key: 'images', label: 'Images to PDF', short: 'Turn images into pages', description: 'Arrange JPG or PNG images and shape them into a PDF.', icon: ImagePlus, eyebrow: 'MAKE A PDF', category: 'organize' },
   { key: 'export', label: 'PDF to images', short: 'Export page artwork', description: 'Choose PDF pages and save them as JPG or PNG images.', icon: FileImage, eyebrow: 'SAVE PAGE IMAGES', category: 'organize' },
   { key: 'page-numbers', label: 'Page numbers', short: 'Header or footer numbers', description: 'Insert customizable page numbering in headers or footers.', icon: Binary, eyebrow: 'PAGINATE DOCUMENT', category: 'organize' },
+  { key: 'crop', label: 'Rotate & Crop', short: 'Trim margins & flip', description: 'Trim page margins with visual crop boxes and adjust page orientations.', icon: Crop, eyebrow: 'GEOMETRIC PRECISION', category: 'organize' },
 
   // Security & Privacy
   { key: 'sign', label: 'Sign PDF', short: 'Stamp digital signature', description: 'Draw, type, or upload your signature and stamp it onto any page.', icon: PenTool, eyebrow: 'E-SIGN DOCUMENTS', category: 'security' },
@@ -118,12 +133,16 @@ const tools: ToolInfo[] = [
   { key: 'excel', label: 'PDF & Excel', short: 'Spreadsheet converter', description: 'Convert tables from PDF into Excel (.xlsx), or format spreadsheets as PDF.', icon: FileSpreadsheet, eyebrow: 'TABLES & SPREADSHEETS', category: 'conversions' },
   { key: 'compress', label: 'Compress PDF', short: 'Make a lighter copy', description: 'Choose a quality preset and compare the actual file size.', icon: WandSparkles, eyebrow: 'LIGHTEN THE FILE', category: 'conversions' },
   { key: 'forms', label: 'Fill Forms', short: 'Fill & flatten AcroForms', description: 'Inspect, fill in interactive PDF form fields, and optionally flatten values.', icon: FileCheck, eyebrow: 'INTERACTIVE FORMS', category: 'conversions' },
+  { key: 'pdf-to-word', label: 'PDF to Word', short: 'Export editable .docx', description: 'Convert PDF documents into formatted Microsoft Word (.docx) files.', icon: FileText, eyebrow: 'OFFICE DOCUMENT', category: 'conversions' },
+  { key: 'word-to-pdf', label: 'Word to PDF', short: 'Convert .docx to PDF', description: 'Convert Microsoft Word documents into paginated, styled PDF files.', icon: FileCode, eyebrow: 'OFFICE DOCUMENT', category: 'conversions' },
 
   // Intelligence & AI
   { key: 'summarizer', label: 'AI Summarizer', short: 'On-device synthesis', description: 'Summarize key takeaways 100% on-device with Chrome AI or smart heuristics.', icon: Sparkles, eyebrow: 'LOCAL INTELLIGENCE', category: 'automation' },
   { key: 'ocr', label: 'OCR PDF', short: 'Searchable scans & text', description: 'Recognize and extract text from scanned PDFs using in-browser machine vision.', icon: ScanText, eyebrow: 'EXTRACT SCAN TEXT', category: 'automation' },
   { key: 'compare', label: 'Compare PDFs', short: 'Visual document diff', description: 'Compare two PDF revisions side-by-side with pixel diff highlighting.', icon: FileDiff, eyebrow: 'SPOT DIFFERENCES', category: 'automation' },
   { key: 'workflow', label: 'Workflow Automator', short: 'Multi-step pipeline', description: 'Chain watermark, page numbers, rotation, and compression into one run.', icon: Workflow, eyebrow: 'CHAINED AUTOMATION', category: 'automation' },
+  { key: 'scan', label: 'Scan to PDF', short: 'Webcam & document snap', description: 'Capture pages with your camera, apply B&W filters, and compile to PDF.', icon: Camera, eyebrow: 'CAMERA CAPTURE', category: 'automation' },
+  { key: 'repair', label: 'Repair PDF', short: 'Fix corrupt xref tables', description: 'Recover corrupted PDFs by rebuilding broken cross-reference tables in memory.', icon: Wrench, eyebrow: 'DOCUMENT RECOVERY', category: 'automation' },
 ];
 
 export default function App() {
@@ -171,6 +190,11 @@ export default function App() {
       case 'workflow': return <WorkflowTool />;
       case 'protect': return <ProtectTool />;
       case 'unlock': return <UnlockTool />;
+      case 'crop': return <CropTool />;
+      case 'pdf-to-word': return <PdfToWordTool />;
+      case 'word-to-pdf': return <WordToPdfTool />;
+      case 'scan': return <ScanTool />;
+      case 'repair': return <RepairTool />;
       default: return <Home onSelect={go} />;
     }
   };
@@ -190,7 +214,7 @@ export default function App() {
           <input
             type="text"
             className="sidebar-search-input"
-            placeholder="Search 19 tools…"
+            placeholder="Search 24 tools…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
