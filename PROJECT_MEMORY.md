@@ -12,7 +12,14 @@
 * **Tagline:** *"Crafted with ❤️ by NasirPintu"*
 * **Creator:** **NasirPintu** (Mohammad Nasiruddin Pintu) — [GitHub](https://github.com/nasiropintu) | [X](https://x.com/nasiropintu) | [Instagram](https://www.instagram.com/the_np2/) | [Facebook](https://www.facebook.com/mohammadnasiruddin.pintu/)
 * **Attribution Standard:** Documented in [`CREATOR_STANDARDS.md`](./CREATOR_STANDARDS.md) — all future features and projects must include the tagline, About modal, AI collaboration credits (Gemini, Manus, ChatGPT, DeepSeek, Claude, Vibe by Mistral), and open-source community credits.
-* **Developer Workflow Rule:** Always provide git commit and push commands to the user after every milestone and feature completion.
+* **Developer Workflow Rules:**
+  * **Always deliver strategic plans, architecture decisions, and roadmap proposals in structured Markdown artifacts.**
+  * **Always provide git commit and push commands to the user after every milestone and feature completion.**
+* **UI/UX & Information Architecture Standards (Milestone 4.0):**
+  * **Category-Based Navigation:** 17+ tools structured into 4 distinct functional domains (`Organize & Pages`, `Security & Privacy`, `Conversions & Data`, `Intelligence & AI`).
+  * **Sidebar Quick Search:** Live tool filtering input with count badges.
+  * **Category Filter Pills on Home Shelf:** One-click toggling between functional domains.
+  * **Standardized Typography Scale:** Strict 11px floor for micro-metadata/eyebrows, 13–14px for interactive controls/buttons, 13.5px for nav items, 14–15px for body text, 15.5px for card titles, 20–24px for H2, 34px for H1. Zero sub-11px font sizes.
 * **100% Client-Side:** All document processing (reading, rendering, merging, rasterizing, compressing, and exporting) runs in the user's browser via Web Workers and HTML5 Canvas.
 * **Zero Server Uploads:** No files are uploaded to any server or cloud API; completely private by design.
 * **Zero Paid Services:** Built entirely on open-source libraries without subscriptions or external APIs.

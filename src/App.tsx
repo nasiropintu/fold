@@ -1,5 +1,31 @@
-import { lazy, Suspense, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Binary, Combine, EyeOff, FileCheck, FileDiff, FileImage, FileSpreadsheet, Files, FileText, Heart, ImagePlus, Info, LockKeyhole, Menu, PenTool, ScanText, Scissors, Sparkles, Stamp, WandSparkles, Workflow, X } from 'lucide-react';
+import { lazy, Suspense, useState, useMemo } from 'react';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Binary,
+  Combine,
+  EyeOff,
+  FileCheck,
+  FileDiff,
+  FileImage,
+  FileSpreadsheet,
+  Files,
+  FileText,
+  Heart,
+  ImagePlus,
+  Info,
+  LockKeyhole,
+  Menu,
+  PenTool,
+  ScanText,
+  Scissors,
+  Search,
+  Sparkles,
+  Stamp,
+  WandSparkles,
+  Workflow,
+  X,
+} from 'lucide-react';
 import Home from './features/Home';
 import AboutModal from './components/AboutModal';
 
@@ -21,35 +47,101 @@ const ExcelTool = lazy(() => import('./features/ExcelTool'));
 const AiSummarizerTool = lazy(() => import('./features/AiSummarizerTool'));
 const WorkflowTool = lazy(() => import('./features/WorkflowTool'));
 
-type ToolKey = 'home' | 'merge' | 'split' | 'organize' | 'images' | 'compress' | 'export' | 'sign' | 'watermark' | 'page-numbers' | 'compare' | 'ocr' | 'redact' | 'forms' | 'markdown' | 'excel' | 'summarizer' | 'workflow';
-type ToolInfo = { key: ToolKey; label: string; short: string; description: string; icon: typeof Combine; eyebrow: string };
+export type ToolKey =
+  | 'home'
+  | 'merge'
+  | 'split'
+  | 'organize'
+  | 'images'
+  | 'compress'
+  | 'export'
+  | 'sign'
+  | 'watermark'
+  | 'page-numbers'
+  | 'compare'
+  | 'ocr'
+  | 'redact'
+  | 'forms'
+  | 'markdown'
+  | 'excel'
+  | 'summarizer'
+  | 'workflow';
+
+export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
+
+export interface CategoryInfo {
+  id: ToolCategory;
+  label: string;
+}
+
+export const CATEGORIES: CategoryInfo[] = [
+  { id: 'organize', label: 'Organize & Pages' },
+  { id: 'security', label: 'Security & Privacy' },
+  { id: 'conversions', label: 'Conversions & Data' },
+  { id: 'automation', label: 'Intelligence & AI' },
+];
+
+export type ToolInfo = {
+  key: ToolKey;
+  label: string;
+  short: string;
+  description: string;
+  icon: typeof Combine;
+  eyebrow: string;
+  category: ToolCategory;
+};
 
 const tools: ToolInfo[] = [
-  { key: 'merge', label: 'Merge PDFs', short: 'Combine documents', description: 'Bring multiple PDFs together in the order you choose.', icon: Combine, eyebrow: 'BUILD ONE DOCUMENT' },
-  { key: 'split', label: 'Split & extract', short: 'Keep the pages you need', description: 'Pull a page range or hand-picked pages into a fresh PDF.', icon: Scissors, eyebrow: 'MAKE A SELECTION' },
-  { key: 'organize', label: 'Organize pages', short: 'Reorder, rotate, remove', description: 'See your pages at a glance and get the sequence just right.', icon: Files, eyebrow: 'TIDY YOUR PAGES' },
-  { key: 'images', label: 'Images to PDF', short: 'Turn images into pages', description: 'Arrange JPG or PNG images and shape them into a PDF.', icon: ImagePlus, eyebrow: 'MAKE A PDF' },
-  { key: 'compress', label: 'Compress PDF', short: 'Make a lighter copy', description: 'Choose a quality preset and compare the actual file size.', icon: WandSparkles, eyebrow: 'LIGHTEN THE FILE' },
-  { key: 'export', label: 'PDF to images', short: 'Export page artwork', description: 'Choose PDF pages and save them as JPG or PNG images.', icon: FileImage, eyebrow: 'SAVE PAGE IMAGES' },
-  { key: 'sign', label: 'Sign PDF', short: 'Stamp digital signature', description: 'Draw, type, or upload your signature and stamp it onto any page.', icon: PenTool, eyebrow: 'E-SIGN DOCUMENTS' },
-  { key: 'watermark', label: 'Watermark PDF', short: 'Stamp text or logos', description: 'Add customizable text or brand watermark stamps across pages.', icon: Stamp, eyebrow: 'PROTECT & BRAND' },
-  { key: 'page-numbers', label: 'Page numbers', short: 'Header or footer numbers', description: 'Insert customizable page numbering in headers or footers.', icon: Binary, eyebrow: 'PAGINATE DOCUMENT' },
-  { key: 'compare', label: 'Compare PDFs', short: 'Visual document diff', description: 'Compare two PDF revisions side-by-side with pixel diff highlighting.', icon: FileDiff, eyebrow: 'SPOT DIFFERENCES' },
-  { key: 'ocr', label: 'OCR PDF', short: 'Searchable scans & text', description: 'Recognize and extract text from scanned PDFs using in-browser machine vision.', icon: ScanText, eyebrow: 'EXTRACT SCAN TEXT' },
-  { key: 'redact', label: 'Redact PDF', short: 'Sanitize confidential data', description: 'Permanently black out and eliminate sensitive information from document pages.', icon: EyeOff, eyebrow: 'PRIVACY & SECURITY' },
-  { key: 'forms', label: 'Fill Forms', short: 'Fill & flatten AcroForms', description: 'Inspect, fill in interactive PDF form fields, and optionally flatten values.', icon: FileCheck, eyebrow: 'INTERACTIVE FORMS' },
-  { key: 'markdown', label: 'PDF to Markdown', short: 'Clean structured text', description: 'Extract clean Markdown with automatic heading levels and paragraph spacing.', icon: FileText, eyebrow: 'MARKDOWN EXTRACTION' },
-  { key: 'excel', label: 'PDF & Excel', short: 'Spreadsheet converter', description: 'Convert tables from PDF into Excel (.xlsx), or format spreadsheets as PDF.', icon: FileSpreadsheet, eyebrow: 'TABLES & SPREADSHEETS' },
-  { key: 'summarizer', label: 'AI Summarizer', short: 'On-device synthesis', description: 'Summarize key takeaways 100% on-device with Chrome AI or smart heuristics.', icon: Sparkles, eyebrow: 'LOCAL INTELLIGENCE' },
-  { key: 'workflow', label: 'Workflow Automator', short: 'Multi-step pipeline', description: 'Chain watermark, page numbers, rotation, and compression into one run.', icon: Workflow, eyebrow: 'CHAINED AUTOMATION' },
+  // Organize & Pages
+  { key: 'merge', label: 'Merge PDFs', short: 'Combine documents', description: 'Bring multiple PDFs together in the order you choose.', icon: Combine, eyebrow: 'BUILD ONE DOCUMENT', category: 'organize' },
+  { key: 'split', label: 'Split & extract', short: 'Keep the pages you need', description: 'Pull a page range or hand-picked pages into a fresh PDF.', icon: Scissors, eyebrow: 'MAKE A SELECTION', category: 'organize' },
+  { key: 'organize', label: 'Organize pages', short: 'Reorder, rotate, remove', description: 'See your pages at a glance and get the sequence just right.', icon: Files, eyebrow: 'TIDY YOUR PAGES', category: 'organize' },
+  { key: 'images', label: 'Images to PDF', short: 'Turn images into pages', description: 'Arrange JPG or PNG images and shape them into a PDF.', icon: ImagePlus, eyebrow: 'MAKE A PDF', category: 'organize' },
+  { key: 'export', label: 'PDF to images', short: 'Export page artwork', description: 'Choose PDF pages and save them as JPG or PNG images.', icon: FileImage, eyebrow: 'SAVE PAGE IMAGES', category: 'organize' },
+  { key: 'page-numbers', label: 'Page numbers', short: 'Header or footer numbers', description: 'Insert customizable page numbering in headers or footers.', icon: Binary, eyebrow: 'PAGINATE DOCUMENT', category: 'organize' },
+
+  // Security & Privacy
+  { key: 'sign', label: 'Sign PDF', short: 'Stamp digital signature', description: 'Draw, type, or upload your signature and stamp it onto any page.', icon: PenTool, eyebrow: 'E-SIGN DOCUMENTS', category: 'security' },
+  { key: 'watermark', label: 'Watermark PDF', short: 'Stamp text or logos', description: 'Add customizable text or brand watermark stamps across pages.', icon: Stamp, eyebrow: 'PROTECT & BRAND', category: 'security' },
+  { key: 'redact', label: 'Redact PDF', short: 'Sanitize confidential data', description: 'Permanently black out and eliminate sensitive information from document pages.', icon: EyeOff, eyebrow: 'PRIVACY & SECURITY', category: 'security' },
+
+  // Conversions & Data
+  { key: 'markdown', label: 'PDF to Markdown', short: 'Clean structured text', description: 'Extract clean Markdown with automatic heading levels and paragraph spacing.', icon: FileText, eyebrow: 'MARKDOWN EXTRACTION', category: 'conversions' },
+  { key: 'excel', label: 'PDF & Excel', short: 'Spreadsheet converter', description: 'Convert tables from PDF into Excel (.xlsx), or format spreadsheets as PDF.', icon: FileSpreadsheet, eyebrow: 'TABLES & SPREADSHEETS', category: 'conversions' },
+  { key: 'compress', label: 'Compress PDF', short: 'Make a lighter copy', description: 'Choose a quality preset and compare the actual file size.', icon: WandSparkles, eyebrow: 'LIGHTEN THE FILE', category: 'conversions' },
+  { key: 'forms', label: 'Fill Forms', short: 'Fill & flatten AcroForms', description: 'Inspect, fill in interactive PDF form fields, and optionally flatten values.', icon: FileCheck, eyebrow: 'INTERACTIVE FORMS', category: 'conversions' },
+
+  // Intelligence & AI
+  { key: 'summarizer', label: 'AI Summarizer', short: 'On-device synthesis', description: 'Summarize key takeaways 100% on-device with Chrome AI or smart heuristics.', icon: Sparkles, eyebrow: 'LOCAL INTELLIGENCE', category: 'automation' },
+  { key: 'ocr', label: 'OCR PDF', short: 'Searchable scans & text', description: 'Recognize and extract text from scanned PDFs using in-browser machine vision.', icon: ScanText, eyebrow: 'EXTRACT SCAN TEXT', category: 'automation' },
+  { key: 'compare', label: 'Compare PDFs', short: 'Visual document diff', description: 'Compare two PDF revisions side-by-side with pixel diff highlighting.', icon: FileDiff, eyebrow: 'SPOT DIFFERENCES', category: 'automation' },
+  { key: 'workflow', label: 'Workflow Automator', short: 'Multi-step pipeline', description: 'Chain watermark, page numbers, rotation, and compression into one run.', icon: Workflow, eyebrow: 'CHAINED AUTOMATION', category: 'automation' },
 ];
 
 export default function App() {
   const [active, setActive] = useState<ToolKey>('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const current = tools.find((tool) => tool.key === active);
-  const go = (key: ToolKey) => { setActive(key); setMobileMenuOpen(false); };
+
+  const go = (key: ToolKey) => {
+    setActive(key);
+    setMobileMenuOpen(false);
+  };
+
+  const filteredTools = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return tools;
+    return tools.filter(
+      (t) =>
+        t.label.toLowerCase().includes(q) ||
+        t.short.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q),
+    );
+  }, [searchQuery]);
+
   const renderTool = () => {
     switch (active) {
       case 'merge': return <MergeTool />;
@@ -72,6 +164,7 @@ export default function App() {
       default: return <Home onSelect={go} />;
     }
   };
+
   return (
     <div className="app-shell">
       <aside className={`sidebar${mobileMenuOpen ? ' sidebar-open' : ''}`}>
@@ -80,62 +173,193 @@ export default function App() {
           <span className="brand-word">fold<span>.</span></span>
           <span className="brand-label">PDF WORKSPACE</span>
         </button>
-        <div className="sidebar-section-label">YOUR WORKBENCH</div>
-        <nav className="primary-nav" aria-label="PDF tools">
-          <button className={`nav-item${active === 'home' ? ' active' : ''}`} onClick={() => go('home')}><span className="nav-icon"><Sparkles size={17} /></span><span>Overview</span></button>
-          <div className="nav-divider" />
-          {tools.map((tool, index) => {
-            const Icon = tool.icon;
-            return <button className={`nav-item${active === tool.key ? ' active' : ''}`} key={tool.key} onClick={() => go(tool.key)}><span className="nav-index">0{index + 1}</span><span className="nav-icon"><Icon size={17} /></span><span>{tool.label}</span></button>;
-          })}
-        </nav>
-        <div className="sidebar-spacer" />
-        <div className="sidebar-note"><span className="sidebar-note-icon"><LockKeyhole size={16} /></span><div><strong>Private by design</strong><span>Files stay on this device.</span></div></div>
-        
+
+        {/* Quick Filter Box */}
+        <div className="sidebar-search-wrap">
+          <Search size={14} className="sidebar-search-icon" />
+          <input
+            type="text"
+            className="sidebar-search-input"
+            placeholder="Search 17 tools…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* Categorized Scrollable Nav */}
+        <div className="sidebar-nav-container">
+          <nav className="primary-nav" aria-label="Overview">
+            <button
+              className={`nav-item${active === 'home' ? ' active' : ''}`}
+              onClick={() => go('home')}
+            >
+              <span className="nav-icon"><Sparkles size={17} /></span>
+              <span>Overview</span>
+            </button>
+          </nav>
+
+          {searchQuery.trim() ? (
+            <div className="sidebar-category-block">
+              <div className="sidebar-category-header">
+                <span>Matching Tools</span>
+                <span className="sidebar-category-count">{filteredTools.length}</span>
+              </div>
+              <nav className="primary-nav">
+                {filteredTools.map((tool) => {
+                  const Icon = tool.icon;
+                  return (
+                    <button
+                      className={`nav-item${active === tool.key ? ' active' : ''}`}
+                      key={tool.key}
+                      onClick={() => go(tool.key)}
+                    >
+                      <span className="nav-icon"><Icon size={17} /></span>
+                      <span>{tool.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          ) : (
+            CATEGORIES.map((cat) => {
+              const catTools = tools.filter((t) => t.category === cat.id);
+              return (
+                <div key={cat.id} className="sidebar-category-block">
+                  <div className="sidebar-category-header">
+                    <span>{cat.label}</span>
+                    <span className="sidebar-category-count">{catTools.length}</span>
+                  </div>
+                  <nav className="primary-nav" aria-label={cat.label}>
+                    {catTools.map((tool) => {
+                      const Icon = tool.icon;
+                      return (
+                        <button
+                          className={`nav-item${active === tool.key ? ' active' : ''}`}
+                          key={tool.key}
+                          onClick={() => go(tool.key)}
+                        >
+                          <span className="nav-icon"><Icon size={17} /></span>
+                          <span>{tool.label}</span>
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Sidebar Privacy Guarantee Note */}
+        <div className="sidebar-note">
+          <span className="sidebar-note-icon"><LockKeyhole size={17} /></span>
+          <div>
+            <strong>Private by design</strong>
+            <span>Files stay on this device.</span>
+          </div>
+        </div>
+
         {/* Persistent NasirPintu Brand Tagline & Modal Trigger */}
-        <button className="creator-sidebar-pill" onClick={() => setAboutOpen(true)} title="View Creator & AI Collaboration Credits">
-          <span className="creator-pill-heart"><Heart size={12} fill="currentColor" /></span>
+        <button
+          className="creator-sidebar-pill"
+          onClick={() => setAboutOpen(true)}
+          title="View Creator & AI Collaboration Credits"
+        >
+          <span className="creator-pill-heart"><Heart size={13} fill="currentColor" /></span>
           <span className="creator-pill-text">Crafted with ❤️ by <strong>NasirPintu</strong></span>
-          <Info size={13} className="creator-pill-info" />
+          <Info size={14} className="creator-pill-info" />
         </button>
 
-        <div className="sidebar-footer"><span className="status-dot" /> FREE TOOLKIT <span className="footer-version">MVP · 01</span></div>
+        <div className="sidebar-footer">
+          <span className="status-dot" /> FREE TOOLKIT <span className="footer-version">MVP · 01</span>
+        </div>
       </aside>
-      {mobileMenuOpen && <button className="mobile-scrim" onClick={() => setMobileMenuOpen(false)} aria-label="Close navigation" />}
+
+      {mobileMenuOpen && (
+        <button
+          className="mobile-scrim"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close navigation"
+        />
+      )}
+
       <main className="main-area">
         <header className="topbar">
-          <button className="mobile-menu-button" aria-label={mobileMenuOpen ? 'Close navigation' : 'Open navigation'} onClick={() => setMobileMenuOpen((open) => !open)}>{mobileMenuOpen ? <X size={19} /> : <Menu size={19} />}</button>
-          <div className="breadcrumbs"><button onClick={() => go('home')}>Workspace</button>{current && <><span>/</span><strong>{current.label}</strong></>}</div>
+          <button
+            className="mobile-menu-button"
+            aria-label={mobileMenuOpen ? 'Close navigation' : 'Open navigation'}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          <div className="breadcrumbs">
+            <button onClick={() => go('home')}>Workspace</button>
+            {current && (
+              <>
+                <span>/</span>
+                <strong>{current.label}</strong>
+              </>
+            )}
+          </div>
           <div className="topbar-right">
-            <button className="topbar-creator-btn" onClick={() => setAboutOpen(true)} title="Crafted with ❤️ by NasirPintu">
+            <button
+              className="topbar-creator-btn"
+              onClick={() => setAboutOpen(true)}
+              title="Crafted with ❤️ by NasirPintu"
+            >
               <Heart size={13} className="topbar-heart-icon" />
               <span>NasirPintu</span>
             </button>
             <span className="topbar-divider" />
-            <span className="privacy-chip"><span className="privacy-lock"><LockKeyhole size={13} /></span> Files stay on your device</span>
+            <span className="privacy-chip">
+              <span className="privacy-lock"><LockKeyhole size={14} /></span> Files stay on your device
+            </span>
             <span className="topbar-divider" />
             <span className="brand-stamp">F<span>01</span></span>
           </div>
         </header>
+
         <div className="content-wrap">
-          {current && <div className="page-heading"><button className="back-link" onClick={() => go('home')}><ArrowLeft size={15} /> All tools</button><span className="eyebrow">{current.eyebrow}</span><h1>{current.label}</h1><p>{current.description}</p></div>}
-          {active === 'home' ? renderTool() : <Suspense fallback={<p className="inline-status">Opening your PDF tool…</p>}>{renderTool()}</Suspense>}
+          {current && (
+            <div className="page-heading">
+              <button className="back-link" onClick={() => go('home')}>
+                <ArrowLeft size={16} /> All tools
+              </button>
+              <span className="eyebrow">{current.eyebrow}</span>
+              <h1>{current.label}</h1>
+              <p>{current.description}</p>
+            </div>
+          )}
+
+          {active === 'home' ? (
+            renderTool()
+          ) : (
+            <Suspense fallback={<p className="inline-status">Opening your PDF tool…</p>}>
+              {renderTool()}
+            </Suspense>
+          )}
+
           {active === 'home' && (
             <footer className="content-footer">
               <span>FOLD PDF TOOLKIT</span>
               <span>Free to use · Your files don't leave your browser</span>
               <button className="footer-creator-button" onClick={() => setAboutOpen(true)}>
-                Crafted with ❤️ by NasirPintu <Info size={11} />
+                Crafted with ❤️ by NasirPintu <Info size={12} />
               </button>
-              <span className="footer-free">NO PAID APIs <ArrowUpRight size={12} /></span>
+              <span className="footer-free">NO PAID APIs <ArrowUpRight size={13} /></span>
             </footer>
           )}
+
           {active !== 'home' && (
             <footer className="tool-footer">
-              <LockKeyhole size={13} />
+              <LockKeyhole size={14} />
               <span>Processing happens in your browser. Files are not uploaded to a server.</span>
-              <button className="footer-creator-button" onClick={() => setAboutOpen(true)} style={{ marginLeft: 'auto' }}>
-                Crafted with ❤️ by NasirPintu <Info size={11} />
+              <button
+                className="footer-creator-button"
+                onClick={() => setAboutOpen(true)}
+                style={{ marginLeft: 'auto' }}
+              >
+                Crafted with ❤️ by NasirPintu <Info size={12} />
               </button>
             </footer>
           )}

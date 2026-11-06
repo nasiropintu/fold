@@ -1,6 +1,27 @@
-import { ArrowUpRight, Binary, FileImage, Combine, EyeOff, FileCheck, FileDiff, Files, ImagePlus, PenTool, Scissors, Stamp, WandSparkles, ScanText, FileSpreadsheet, Sparkles, FileText, Workflow, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import {
+  ArrowUpRight,
+  Binary,
+  CheckCircle,
+  Combine,
+  EyeOff,
+  FileCheck,
+  FileDiff,
+  FileImage,
+  FileSpreadsheet,
+  Files,
+  FileText,
+  ImagePlus,
+  PenTool,
+  ScanText,
+  Scissors,
+  Sparkles,
+  Stamp,
+  WandSparkles,
+  Workflow,
+} from 'lucide-react';
 
-type ToolKey =
+export type ToolKey =
   | 'home'
   | 'merge'
   | 'split'
@@ -20,29 +41,59 @@ type ToolKey =
   | 'summarizer'
   | 'workflow';
 
+export type ToolCategory = 'organize' | 'security' | 'conversions' | 'automation';
+
 type Props = { onSelect: (key: ToolKey) => void };
 
-const cards = [
-  { key: 'merge' as const, title: 'Merge PDFs', detail: 'Make one file from many.', icon: Combine, number: '01', color: 'blue' },
-  { key: 'split' as const, title: 'Split & extract', detail: 'Keep just the pages you need.', icon: Scissors, number: '02', color: 'orange' },
-  { key: 'organize' as const, title: 'Organize pages', detail: 'Reorder, rotate or remove.', icon: Files, number: '03', color: 'violet' },
-  { key: 'images' as const, title: 'Images to PDF', detail: 'Make a PDF from JPG or PNG.', icon: ImagePlus, number: '04', color: 'green' },
-  { key: 'compress' as const, title: 'Compress PDF', detail: 'A lighter copy, your quality choice.', icon: WandSparkles, number: '05', color: 'pink' },
-  { key: 'export' as const, title: 'PDF to images', detail: 'Save pages as JPG or PNG.', icon: FileImage, number: '06', color: 'yellow' },
-  { key: 'sign' as const, title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green' },
-  { key: 'watermark' as const, title: 'Watermark PDF', detail: 'Stamp text or custom logos.', icon: Stamp, number: '08', color: 'blue' },
-  { key: 'page-numbers' as const, title: 'Page numbers', detail: 'Add header or footer pagination.', icon: Binary, number: '09', color: 'orange' },
-  { key: 'compare' as const, title: 'Compare PDFs', detail: 'Pixel-level visual document diff.', icon: FileDiff, number: '10', color: 'violet' },
-  { key: 'ocr' as const, title: 'OCR PDF', detail: 'Extract text via in-browser vision.', icon: ScanText, number: '11', color: 'green' },
-  { key: 'redact' as const, title: 'Redact PDF', detail: 'Permanently purge confidential data.', icon: EyeOff, number: '12', color: 'pink' },
-  { key: 'forms' as const, title: 'Fill Forms', detail: 'Fill, edit & flatten AcroForms.', icon: FileCheck, number: '13', color: 'blue' },
-  { key: 'markdown' as const, title: 'PDF to Markdown', detail: 'Clean structured text & headings.', icon: FileText, number: '14', color: 'orange' },
-  { key: 'excel' as const, title: 'PDF & Excel', detail: 'Convert tables & spreadsheets.', icon: FileSpreadsheet, number: '15', color: 'green' },
-  { key: 'summarizer' as const, title: 'AI Summarizer', detail: 'Local on-device text distillation.', icon: Sparkles, number: '16', color: 'violet' },
-  { key: 'workflow' as const, title: 'Workflow Automator', detail: 'Chain multi-operation pipelines.', icon: Workflow, number: '17', color: 'blue' },
+type CardItem = {
+  key: ToolKey;
+  title: string;
+  detail: string;
+  icon: typeof Combine;
+  number: string;
+  color: 'blue' | 'orange' | 'violet' | 'green' | 'pink' | 'yellow';
+  category: ToolCategory;
+};
+
+const cards: CardItem[] = [
+  // Organize & Pages
+  { key: 'merge', title: 'Merge PDFs', detail: 'Make one file from many.', icon: Combine, number: '01', color: 'blue', category: 'organize' },
+  { key: 'split', title: 'Split & extract', detail: 'Keep just the pages you need.', icon: Scissors, number: '02', color: 'orange', category: 'organize' },
+  { key: 'organize', title: 'Organize pages', detail: 'Reorder, rotate or remove.', icon: Files, number: '03', color: 'violet', category: 'organize' },
+  { key: 'images', title: 'Images to PDF', detail: 'Make a PDF from JPG or PNG.', icon: ImagePlus, number: '04', color: 'green', category: 'organize' },
+  { key: 'export', title: 'PDF to images', detail: 'Save pages as JPG or PNG.', icon: FileImage, number: '06', color: 'yellow', category: 'organize' },
+  { key: 'page-numbers', title: 'Page numbers', detail: 'Add header or footer pagination.', icon: Binary, number: '09', color: 'orange', category: 'organize' },
+
+  // Security & Privacy
+  { key: 'sign', title: 'Sign PDF', detail: 'Draw, type, or stamp your signature.', icon: PenTool, number: '07', color: 'green', category: 'security' },
+  { key: 'watermark', title: 'Watermark PDF', detail: 'Stamp text or custom logos.', icon: Stamp, number: '08', color: 'blue', category: 'security' },
+  { key: 'redact', title: 'Redact PDF', detail: 'Permanently purge confidential data.', icon: EyeOff, number: '12', color: 'pink', category: 'security' },
+
+  // Conversions & Data
+  { key: 'markdown', title: 'PDF to Markdown', detail: 'Clean structured text & headings.', icon: FileText, number: '14', color: 'orange', category: 'conversions' },
+  { key: 'excel', title: 'PDF & Excel', detail: 'Convert tables & spreadsheets.', icon: FileSpreadsheet, number: '15', color: 'green', category: 'conversions' },
+  { key: 'compress', title: 'Compress PDF', detail: 'A lighter copy, your quality choice.', icon: WandSparkles, number: '05', color: 'pink', category: 'conversions' },
+  { key: 'forms', title: 'Fill Forms', detail: 'Fill, edit & flatten AcroForms.', icon: FileCheck, number: '13', color: 'blue', category: 'conversions' },
+
+  // Intelligence & AI
+  { key: 'summarizer', title: 'AI Summarizer', detail: 'Local on-device text distillation.', icon: Sparkles, number: '16', color: 'violet', category: 'automation' },
+  { key: 'ocr', title: 'OCR PDF', detail: 'Extract text via in-browser vision.', icon: ScanText, number: '11', color: 'green', category: 'automation' },
+  { key: 'compare', title: 'Compare PDFs', detail: 'Pixel-level visual document diff.', icon: FileDiff, number: '10', color: 'violet', category: 'automation' },
+  { key: 'workflow', title: 'Workflow Automator', detail: 'Chain multi-operation pipelines.', icon: Workflow, number: '17', color: 'blue', category: 'automation' },
 ];
 
+const categoryLabels: Record<ToolCategory, string> = {
+  organize: 'Organize & Pages',
+  security: 'Security & Privacy',
+  conversions: 'Conversions & Data',
+  automation: 'Intelligence & AI',
+};
+
 export default function Home({ onSelect }: Props) {
+  const [selectedCat, setSelectedCat] = useState<'all' | ToolCategory>('all');
+
+  const visibleCards = selectedCat === 'all' ? cards : cards.filter((c) => c.category === selectedCat);
+
   return (
     <div className="home-view">
       <section className="hero-panel">
@@ -64,7 +115,7 @@ export default function Home({ onSelect }: Props) {
           </h1>
           <p>Everyday PDF tasks, conversions, and local AI without the detour. Pick a tool, make your change, take your file back.</p>
           <button className="hero-cta" onClick={() => onSelect('merge')}>
-            Start with a PDF <ArrowUpRight size={16} />
+            Start with a PDF <ArrowUpRight size={17} />
           </button>
         </div>
         <div className="hero-annotation">
@@ -74,23 +125,79 @@ export default function Home({ onSelect }: Props) {
         <div className="hero-serial">FOLD / FILES / 01</div>
       </section>
 
+      {/* Category Filter Pills Bar */}
+      <div className="category-filter-bar" role="tablist" aria-label="Tool Categories">
+        <button
+          className={`category-tab-btn ${selectedCat === 'all' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('all')}
+          role="tab"
+          aria-selected={selectedCat === 'all'}
+        >
+          All Tools <span className="category-tab-badge">17</span>
+        </button>
+        <button
+          className={`category-tab-btn ${selectedCat === 'organize' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('organize')}
+          role="tab"
+          aria-selected={selectedCat === 'organize'}
+        >
+          Organize & Pages <span className="category-tab-badge">6</span>
+        </button>
+        <button
+          className={`category-tab-btn ${selectedCat === 'security' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('security')}
+          role="tab"
+          aria-selected={selectedCat === 'security'}
+        >
+          Security & Privacy <span className="category-tab-badge">3</span>
+        </button>
+        <button
+          className={`category-tab-btn ${selectedCat === 'conversions' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('conversions')}
+          role="tab"
+          aria-selected={selectedCat === 'conversions'}
+        >
+          Conversions & Data <span className="category-tab-badge">4</span>
+        </button>
+        <button
+          className={`category-tab-btn ${selectedCat === 'automation' ? 'active' : ''}`}
+          onClick={() => setSelectedCat('automation')}
+          role="tab"
+          aria-selected={selectedCat === 'automation'}
+        >
+          Intelligence & AI <span className="category-tab-badge">4</span>
+        </button>
+      </div>
+
       <div className="home-section-head">
         <div>
-          <span className="eyebrow">THE TOOL SHELF</span>
-          <h2>What are we working on?</h2>
+          <span className="eyebrow">
+            {selectedCat === 'all' ? 'THE COMPLETE WORKBENCH' : categoryLabels[selectedCat].toUpperCase()}
+          </span>
+          <h2>
+            {selectedCat === 'all'
+              ? 'What are we working on?'
+              : `${categoryLabels[selectedCat]} Tools`}
+          </h2>
         </div>
-        <span className="tool-count">17 <span>TOOLS</span></span>
+        <span className="tool-count">
+          {visibleCards.length} <span>TOOLS</span>
+        </span>
       </div>
 
       <section className="tool-card-grid" aria-label="PDF tools">
-        {cards.map(({ key, title, detail, icon: Icon, number, color }) => (
-          <button className={`tool-card accent-${color}`} key={key} onClick={() => onSelect(key)}>
+        {visibleCards.map(({ key, title, detail, icon: Icon, number, color }) => (
+          <button
+            className={`tool-card accent-${color}`}
+            key={key}
+            onClick={() => onSelect(key)}
+          >
             <span className="tool-card-top">
               <span className="tool-card-number">{number} / TASK</span>
-              <ArrowUpRight className="tool-card-arrow" size={18} />
+              <ArrowUpRight className="tool-card-arrow" size={19} />
             </span>
             <span className="tool-icon">
-              <Icon size={20} strokeWidth={1.8} />
+              <Icon size={21} strokeWidth={1.8} />
             </span>
             <strong>{title}</strong>
             <span className="tool-card-detail">{detail}</span>
@@ -116,14 +223,14 @@ export default function Home({ onSelect }: Props) {
           <span className="eyebrow">PHASE 1, 2 & 3 COMPLETE</span>
           <h3>All 17 Tools Unlocked.</h3>
           <div className="later-item">
-            <CheckCircle size={15} color="#10b981" />
+            <CheckCircle size={16} color="#10b981" />
             <span>PDF to Markdown & Excel Tools</span>
-            <span className="later-tag" style={{ background: '#ecfdf5', color: '#059669' }}>READY</span>
+            <span className="later-tag">READY</span>
           </div>
           <div className="later-item">
-            <CheckCircle size={15} color="#10b981" />
+            <CheckCircle size={16} color="#10b981" />
             <span>Local AI Summarizer & Workflow Chain</span>
-            <span className="later-tag" style={{ background: '#ecfdf5', color: '#059669' }}>READY</span>
+            <span className="later-tag">READY</span>
           </div>
         </div>
       </section>
