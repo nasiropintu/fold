@@ -1650,6 +1650,28 @@ button {
   color: #9de2bd;
 }
 
+.topbar-install-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #1c715f;
+  background: #1c715f;
+  color: #f2fbf6;
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+}
+
+.topbar-install-btn:hover {
+  background: #288c77;
+  border-color: #288c77;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(28, 113, 95, 0.25);
+}
+
 .topbar-creator-btn {
   display: flex;
   align-items: center;

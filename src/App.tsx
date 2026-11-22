@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useMemo } from 'react';
+import { lazy, Suspense, useState, useMemo, useEffect } from 'react';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -6,6 +6,7 @@ import {
   Camera,
   Combine,
   Crop,
+  Download,
   EyeOff,
   FileCheck,
   FileCode,
@@ -150,6 +151,25 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    if (choice.outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   const current = tools.find((tool) => tool.key === active);
 
@@ -336,6 +356,16 @@ export default function App() {
             )}
           </div>
           <div className="topbar-right">
+            {deferredPrompt && (
+              <button
+                className="topbar-install-btn"
+                onClick={handleInstall}
+                title="Install Fold as a desktop application"
+              >
+                <Download size={13} />
+                <span>Install App</span>
+              </button>
+            )}
             <button
               className="topbar-creator-btn"
               onClick={() => setAboutOpen(true)}
