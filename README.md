@@ -71,3 +71,9 @@ Compression and page-image export can be cancelled during rendering. Compression
 ## Development
 
 Use `pnpm install`, `pnpm dev`, and `pnpm build`.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
